@@ -15,7 +15,6 @@ Este script automatiza a instalação de dependências no Ubuntu 22.04 ou distri
   - Instalação do [KiCad 9.x.x](https://www.kicad.org/)
   - Instalação do [ROS2 Humble](https://docs.ros.org/en/humble/index.html)
   - Instalação do Docker + Docker Compose
-  - Instalação de Python com pyenv
 
 ## 🖥️ Pré-requisitos
 
