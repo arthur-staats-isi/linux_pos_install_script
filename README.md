@@ -7,14 +7,13 @@ Este script automatiza a instalação de dependências no Ubuntu 22.04 ou distri
 - Atualização do sistema
 - Instalação das dependências desejadas:
   - Instalação de [apt-fast](https://github.com/ilikenwf/apt-fast)
-  - Instalação do [ESP-IDF](https://github.com/espressif/esp-idf)
   - Instalação de Zsh + [Oh My Zsh](https://github.com/ohmyzsh/ohmyzsh) + plugin [autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) + plugin [syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting)
+  - Instalação do [ESP-IDF](https://github.com/espressif/esp-idf)
   - Instalação do [HTOP](https://github.com/htop-dev/htop)
   - Instalação do Google Chrome
   - Instalação do VS Code
   - Instalação da extensão [ESP-IDF no VS Code](https://github.com/espressif/vscode-esp-idf-extension)
   - Instalação do [KiCad 9.x.x](https://www.kicad.org/)
-  - Instalação do [ROS2 Humble](https://docs.ros.org/en/humble/index.html)
   - Instalação do Docker + Docker Compose
 
 ## 🖥️ Pré-requisitos
