@@ -46,6 +46,76 @@ if ask_install "Deseja atualizar todos os pacotes do sistema (recomendado)?"; th
     fi
 fi
 
+# ESP-IDF
+if ask_install "Instalar o ESP-IDF?"; then
+    TEMP_DIR=$(mktemp -d)
+
+    # Clona apenas os metadados (sem recursão)
+    git clone --quiet --filter=blob:none --bare https://github.com/espressif/esp-idf.git "$TEMP_DIR/esp-idf" | zenity --progress --pulsate --no-cancel --auto-close --title="ESP-IDF" --text="Buscando versões disponíveis do ESP-IDF..." --width=400
+
+    # Coleta e ordena as tags (versões)
+    TAGS=$(git --git-dir="$TEMP_DIR/esp-idf" tag -l 'v*' | sort -Vr)
+
+    if [ -z "$TAGS" ]; then
+        zenity --error --text="Não foi possível obter as versões do ESP-IDF."
+        rm -rf "$TEMP_DIR"
+        exit 1
+    fi
+
+    # Gera lista formatada para o Zenity (uma versão por linha)
+    SELECTED_TAG=$(echo "$TAGS" | zenity --list \
+        --title="Escolha a versão do ESP-IDF" \
+        --text="Selecione uma versão para instalar:" \
+        --column="Versões" \
+        --height=500 \
+        --width=300)
+
+    rm -rf "$TEMP_DIR"
+
+    if [ -z "$SELECTED_TAG" ]; then
+        zenity --warning --text="Instalação do ESP-IDF cancelada pelo usuário."
+        exit 1
+    fi
+
+    # Remove o 'v' e monta diretório padrão
+    CLEAN_VERSION="${SELECTED_TAG#v}"
+    ESP_IDF_BASE="$HOME/esp/v$CLEAN_VERSION"
+    ESP_IDF_PATH="$ESP_IDF_BASE/esp-idf"
+
+    ESP_IDF_BASE="$HOME/esp/v$CLEAN_VERSION"
+    ESP_IDF_PATH="$ESP_IDF_BASE/esp-idf"
+
+    if [ -d "$ESP_IDF_PATH" ]; then
+        zenity --question --title="ESP-IDF já existe" \
+            --text="A versão $SELECTED_TAG já está instalada em:\n$ESP_IDF_PATH\n\nDeseja sobrescrever?"
+
+        if [ $? -eq 0 ]; then
+            rm -rf "$ESP_IDF_PATH"
+        else
+            zenity --info --text="Instalação do ESP-IDF v$CLEAN_VERSION cancelada."
+            exit 0
+        fi
+    fi
+
+    mkdir -p "$ESP_IDF_BASE"
+    cd "$ESP_IDF_BASE"
+
+    git clone --recursive --branch "$SELECTED_TAG" https://github.com/espressif/esp-idf.git
+
+    cd esp-idf
+    ./install.sh
+
+    if ask_install "Incluir ESP-IDF no .bashrc?"; then
+        grep -qxF "source $ESP_IDF_PATH/export.sh" ~/.bashrc || echo "source $ESP_IDF_PATH/export.sh" >> ~/.bashrc
+    fi
+
+    if [[ "$ZSH_INSTALLED" = true ]]; then
+        if ask_install "Incluir ESP-IDF no .zshrc?"; then
+            grep -qxF "source $ESP_IDF_PATH/export.sh" ~/.zshrc || echo "source $ESP_IDF_PATH/export.sh" >> ~/.zshrc
+        fi
+    fi
+fi
+
 # Zsh + Oh My Zsh + plugins
 ZSH_INSTALLED=false
 if ask_install "Instalar Zsh + Oh My Zsh + plugins (git, autosuggestions, syntax-highlighting)?"; then
