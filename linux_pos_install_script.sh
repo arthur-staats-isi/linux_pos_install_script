@@ -35,32 +35,29 @@ zenity --info --title="Instalador de pacotes" --text="Instalação interativa de
 if ask_install "Instalar o apt-fast (acelera atualizações)?"; then
     sudo add-apt-repository -y ppa:apt-fast/stable | zenity --progress --pulsate --no-cancel --auto-close --title="Instalador de pacotes" --text="Adicionando repositório do apt-fast..." --width=400
     sudo apt update | zenity --progress --pulsate --no-cancel --auto-close --title="Instalador de pacotes" --text="Update de repositórios..." --width=400
-    sudo apt install -y apt-fast | zenity --progress --pulsate --no-cancel --auto-close --title="Instalador de pacotes" --text="Instalando apt-fast..." --width=400
-    zenity --info --title="Instalador de pacotes" --text="Instalação do apt-fast finalizada.\nClique em OK para continuar."
+    sudo apt install -y apt-fast
     PACKAGE_MANAGER="apt-fast"
 fi
 
 # UPDATE & UPGRADE
 if ask_install "Deseja atualizar todos os pacotes do sistema (recomendado)?"; then
     if [[ "$PACKAGE_MANAGER" == "apt-fast" ]]; then
-        sudo apt-fast update | zenity --progress --pulsate --no-cancel --auto-close --title="Instalador de pacotes" --text="Update de repositórios..." --width=400
-        sudo apt-fast upgrade -y | zenity --progress --pulsate --no-cancel --auto-close --title="Instalador de pacotes" --text="Atualizando pacotes..." --width=400
+        sudo apt-fast update
+        sudo apt-fast upgrade -y
     else
-        sudo apt update | zenity --progress --pulsate --no-cancel --auto-close --title="Instalador de pacotes" --text="Update de repositórios..." --width=400
-        sudo apt upgrade -y | zenity --progress --pulsate --no-cancel --auto-close --title="Instalador de pacotes" --text="Atualizando pacotes..." --width=400
+        sudo apt update
+        sudo apt upgrade -y
     fi
-    zenity --info --title="Instalador de pacotes" --text="Atualização de pacotes finalizada.\nClique em OK para continuar."
 fi
 
 # Zsh + Oh My Zsh + plugins
 if ask_install "Instalar Zsh + Oh My Zsh + plugins (git, autosuggestions, syntax-highlighting)?"; then
-    sudo $PACKAGE_MANAGER install -y zsh | zenity --progress --pulsate --no-cancel --auto-close --title="Instalador de pacotes" --text="Instalando Zsh..." --width=400
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended | zenity --progress --pulsate --no-cancel --auto-close --title="Instalador de pacotes" --text="Instalando Oh My Zsh..." --width=400
+    sudo $PACKAGE_MANAGER install -y zsh
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
     ZSH_CUSTOM=${ZSH_CUSTOM:-~/.oh-my-zsh/custom}
-    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions" | zenity --progress --pulsate --no-cancel --auto-close --title="Instalador de pacotes" --text="Instalando plugin autosuggestions..." --width=400
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" | zenity --progress --pulsate --no-cancel --auto-close --title="Instalador de pacotes" --text="Instalando plugin syntax-highlighting..." --width=400
+    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
     sed -i 's/plugins=(.*)/plugins=(git zsh-autosuggestions zsh-syntax-highlighting)/' ~/.zshrc
-    zenity --info --title="Instalador de pacotes" --text="Instalação de Zsh + Oh My Zsh + plugins finalizada.\nClique em OK para continuar."
 fi
 
 # Verifica se ZSH está instalado
